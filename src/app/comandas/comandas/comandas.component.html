@@ -1,36 +1,59 @@
 <main>
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
+  <div class="example-loading-shade"
+      *ngIf="isLoadingResults">
+    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+   
+</div>
+
+<div class="example-table-container">
+
+<table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
     <!--- Note that these columns can be defined in any order.
           The actual rendered columns are set as a property on the row definition" -->
-  
-    <!-- Position Column -->
-    <ng-container matColumnDef="mesa">
-      <th mat-header-cell *matHeaderCellDef> Mesa </th>
-      <td mat-cell *matCellDef="let element"> {{element.mesa}} </td>
-    </ng-container>
-  
-    <!-- Name Column -->
-    <ng-container matColumnDef="dia">
-      <th mat-header-cell *matHeaderCellDef> Dia </th>
-      <td mat-cell *matCellDef="let element"> {{element.dia}} </td>
-    </ng-container>
-  
-    <!-- Weight Column -->
-    <ng-container matColumnDef="platos">
-      <th mat-header-cell *matHeaderCellDef> Platos </th>
-      <td mat-cell *matCellDef="let element"> {{element.platos}} </td>
-    </ng-container>
-  
-    <!-- Symbol Column -->
-    <ng-container matColumnDef="symbol">
-      <th mat-header-cell *matHeaderCellDef> Symbol </th>
-      <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
-    </ng-container>
-  
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns">
+            <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+            <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+          </ng-container>
+          <ng-container matColumnDef="expand">
+            <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button aria-label="expand row" (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+                <mat-icon *ngIf="expandedElement !== element">expand_more</mat-icon>
+                <mat-icon *ngIf="expandedElement === element">expand_less</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+          <ng-container  matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
+              <div  class="example-element-detail"
+                   [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                   <table style="  margin-bottom: 25px;"
+                   >
+                      <tr >
+                        <td colspan="2">
+                          <h2>Platos</h2>
+                        </td>
+                      </tr>
+                      <tr *ngFor="let el of element.platos">
+                        <td></td>
+                        <td><span class="texto-interior">{{el}}</span></td>
+                      </tr>
+                   </table>
+              </div>
+            </td>
+          </ng-container>
+   
+          <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+          <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpand;"
+              class="example-element-row"
+              [class.example-expanded-row]="expandedElement === element"
+              (click)="expandedElement = expandedElement === element ? null : element">
+          </tr>
+          <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+
   </table>
+  </div>
 </main>
 <mat-paginator [length]="resultComantas"
               pageSize="5"
