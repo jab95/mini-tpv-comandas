@@ -49,7 +49,7 @@ export class ComandasComponent implements OnInit {
 
   public connectSocket(){
 
-    this.webSocket = new WebSocketSubject("wss://mini-tpv-server.herokuapp.com");
+    this.webSocket = new WebSocketSubject("ws://mini-tpv-server.herokuapp.com:3101");
     this.webSocket.subscribe({
       next: (comanda)=>{
         this.recargaTabla(comanda)
