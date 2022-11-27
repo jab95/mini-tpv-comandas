@@ -49,7 +49,7 @@ export class ComandasComponent implements OnInit {
 
   public connectSocket(){
 
-    this.webSocket = new WebSocketSubject("wss://mini-tpv-backend-production.up.railway.app:"+process.env.PORT);
+    this.webSocket = new WebSocketSubject("wss://mini-tpv-backend-production.up.railway.app:3100");
     this.webSocket.subscribe({
       next: (comanda)=>{
         this.recargaTabla(comanda)
